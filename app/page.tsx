@@ -37,7 +37,7 @@ export default function Home() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-12 border-t border-b">
+      {/* <section className="py-12 border-t border-b">
         <h2 className="text-3xl font-bold text-center mb-12">Making a Difference Together</h2>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           <StatCard icon={<Users className="h-8 w-8 text-teal-500" />} value="12,458" label="People Found" />
@@ -45,7 +45,7 @@ export default function Home() {
           <StatCard icon={<AlertTriangle className="h-8 w-8 text-teal-500" />} value="85%" label="Resolution Rate" />
           <StatCard icon={<Heart className="h-8 w-8 text-teal-500" />} value="50K+" label="Community Members" />
         </div>
-      </section>
+      </section> */}
 
       {/* How It Works */}
       <section className="py-12 md:py-24">
