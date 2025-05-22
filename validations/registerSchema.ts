@@ -4,15 +4,23 @@ const signUpSchema = z
   .object({
     name: z
       .string()
-      .min(3, { message: "First name must be at least 12 characters long" }),
-    
-    email: z.string().min(1, { message: "Email address is required" }).email(),
+      .min(3, { message: "First name must be at least 3 characters long" }),
+
+    email: z
+      .string()
+      .min(1, { message: "Email address is required" })
+      .email({ message: "Invalid email address" })
+      .refine((val) => val.toLowerCase().endsWith("@gmail.com"), {
+        message: "Email must be a Gmail address (xxx@gmail.com)",
+      }),
+
     password: z
       .string()
       .regex(/.*[!@#$%^&*()_+{}|[\]\\:";'<>?,./].*/, {
         message: "Password must have a special character",
       })
       .min(8, { message: "Password must be at least 8 characters long" }),
+
     confirmPassword: z
       .string()
       .min(1, { message: "Confirm Password is Required" }),

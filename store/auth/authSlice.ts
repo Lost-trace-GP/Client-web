@@ -17,7 +17,7 @@ const initialState: AuthState = {
 };
 
 const API_URL =
-  process.env.REACT_APP_API_URL || "http://localhost:3000/api/auth";
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/auth";
 
 // Async thunk for user registration
 export const actAuthRegister = createAsyncThunk<
@@ -56,9 +56,9 @@ export const forgotPassword = createAsyncThunk<
   { message: string; resetToken: string },
   { email: string },
   { rejectValue: string }
->("auth/forgotPassword", async ({ email }, { rejectWithValue }) => {
+>("auth/forgetPassword", async ({ email }, { rejectWithValue }) => {
   try {
-    const response = await axios.post(`${API_URL}/forgot-password`, { email });
+    const response = await axios.post(`${API_URL}/forget-password`, { email });
     return response.data;
   } catch (error: any) {
     return rejectWithValue(
