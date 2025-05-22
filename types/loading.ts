@@ -1,0 +1,1 @@
+export type TLoading = "idle" | "loading" | "succeeded" | "failed";
