@@ -6,6 +6,8 @@ import { StatCard } from "@/components/stat-card"
 import { RecentReports } from "@/components/recent-reports"
 
 export default function Home() {
+
+
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Hero Section */}

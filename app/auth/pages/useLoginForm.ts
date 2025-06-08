@@ -32,6 +32,19 @@ export function useLoginForm() {
     }
   }, [token, user, loading, router]);
 
+  console.log("Raw error from Redux:", error);
+
+  // Helper to safely extract error message
+  const getErrorMessage = (err: unknown): string | null => {
+    if (!err) return null;
+    if (typeof err === "string") return err;
+    if (typeof err === "object" && err !== null && "error" in err) {
+      // @ts-ignore
+      return err.error || "Login failed";
+    }
+    return "Login failed";
+  };
+
   const handleChange =
     (field: keyof LoginFormType) =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,7 +67,7 @@ export function useLoginForm() {
   return {
     formData,
     loading,
-    error,
+    error: getErrorMessage(error),
     validationError,
     handleChange,
     handleSubmit,

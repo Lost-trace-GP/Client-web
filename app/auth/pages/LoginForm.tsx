@@ -29,6 +29,8 @@ export default function LoginForm({ onSwitchToSignup }: LoginFormProps) {
     handleSubmit,
   } = useLoginForm();
 
+  // console.log({ error, validationError , loading});
+
   return (
     <Card>
       <CardHeader>
@@ -78,11 +80,9 @@ export default function LoginForm({ onSwitchToSignup }: LoginFormProps) {
             </Label>
           </div>
 
-          {(validationError || error) && (
-            <p className="text-sm text-red-600 font-medium">
-              {validationError ?? error}
-            </p>
-          )}
+          <p className="text-sm text-red-600 font-medium">
+            {validationError ?? error }
+          </p>
         </CardContent>
 
         <CardFooter className="flex flex-col">

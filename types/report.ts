@@ -9,13 +9,14 @@ export interface Report {
   description: string;
   imageUrl?: string | null;
   imagePublicId?: string | null;
-  faceEmbedding?: any | null; // Json can be any type in TypeScript (use specific type if known)
+  faceEmbedding?: number[] | null; // More precise than any
   status: ReportStatus;
   location?: string | null;
   lat?: number | null;
   lon?: number | null;
-  submittedAt: string; // DateTime is typically serialized as ISO string
+  submittedAt: string; // ISO date string
   submittedBy: User;
   submittedById: string;
   matchedWith?: string | null;
+  phone?: number | null; // optional, depending on backend
 }

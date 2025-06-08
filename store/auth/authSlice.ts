@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
-import { User, Role , TLoading} from "../../types";
+import { User, Role, TLoading } from "../../types";
 
 interface AuthState {
   user: Partial<User> | null;
@@ -17,7 +17,7 @@ const initialState: AuthState = {
 };
 
 const API_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/auth";
+  process.env.NEXT_PUBLIC_API_URL 
 
 // Async thunk for user registration
 export const actAuthRegister = createAsyncThunk<
@@ -44,7 +44,7 @@ export const login = createAsyncThunk<
   { rejectValue: string }
 >("auth/login", async (credentials, { rejectWithValue }) => {
   try {
-    const response = await axios.post(`${API_URL}/login`, credentials);
+    const response = await axios.post(`${API_URL}/auth/login`, credentials);
     return response.data.data;
   } catch (error: any) {
     return rejectWithValue(error.response?.data?.message || "Login failed");
@@ -176,5 +176,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout, clearError , resetUI } = authSlice.actions;
+export const { logout, clearError, resetUI } = authSlice.actions;
 export default authSlice.reducer;
