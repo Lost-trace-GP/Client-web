@@ -4,40 +4,38 @@ import { Report } from "@/types/report";
 import { TLoading } from "@/types";
 import { RootState } from "../index";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL; 
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export const fetchReports = createAsyncThunk<
   Report[],
   void,
   { state: RootState }
 >("reports/fetchAll", async (_, thunkAPI) => {
-  
-    const token = thunkAPI.getState().auth.token;
+  const token = thunkAPI.getState().auth.token;
 
-    try {
-      const response = await fetch(`${API_URL}/report`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-  
-      if (!response.ok) {
-        // handle non-2xx HTTP responses
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to fetch reports");
-      }
-  
-      const data = await response.json();
-      console.log("Reports data:", data.data.reports); // assuming response shape
-      return data.data.reports; // return reports array
-    } catch (error) {
-      console.error("Fetch reports error:", error);
-      throw error; // or handle error accordingly
+  try {
+    const response = await fetch(`${API_URL}/report`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      // handle non-2xx HTTP responses
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Failed to fetch reports");
     }
-});
 
+    const data = await response.json();
+    console.log("Reports data:", data.data.reports);
+    return data.data.reports;
+  } catch (error) {
+    console.error("Fetch reports error:", error);
+    throw error;
+  }
+});
 
 export const createReport = createAsyncThunk<
   Report,
@@ -46,12 +44,13 @@ export const createReport = createAsyncThunk<
 >("report/create", async (formData, thunkAPI) => {
   try {
     const token = thunkAPI.getState().auth.token;
-    const response = await axios.post(`${API_URL}/`, formData, {
+    const response = await axios.post(`${API_URL}/report`, formData, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "multipart/form-data",
       },
     });
+    console.log(response);
     return response.data.data.report as Report; // Adjust according to API
   } catch (error: any) {
     console.error("Create report error:", error.response?.data || error);

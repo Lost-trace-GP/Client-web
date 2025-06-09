@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { useLoginForm } from "@/app/auth/pages/useLoginForm"; // Adjust path accordingly
+import { useLoginForm } from "./useLoginForm";
 
 type LoginFormProps = {
   onSwitchToSignup?: () => void;
@@ -81,7 +81,7 @@ export default function LoginForm({ onSwitchToSignup }: LoginFormProps) {
           </div>
 
           <p className="text-sm text-red-600 font-medium">
-            {validationError ?? error }
+            {validationError ?? error}
           </p>
         </CardContent>
 

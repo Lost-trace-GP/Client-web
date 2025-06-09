@@ -16,17 +16,16 @@ const initialState: AuthState = {
   error: null,
 };
 
-const API_URL =
-  process.env.NEXT_PUBLIC_API_URL 
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 // Async thunk for user registration
 export const actAuthRegister = createAsyncThunk<
   { token: string },
-  { name: string; email: string; password: string },
+  { name: string; email: string; phone: string; password: string },
   { rejectValue: string }
 >("auth/register", async (credentials, { rejectWithValue }) => {
   try {
-    const response = await axios.post(`${API_URL}/register`, credentials);
+    const response = await axios.post(`${API_URL}/auth/register`, credentials);
     console.log(response.data.data);
 
     return response.data.data;

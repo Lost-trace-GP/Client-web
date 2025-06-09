@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { actAuthRegister, clearError, resetUI } from "@/store/auth/authSlice";
 import { signUpSchema, signUpType } from "@/validations/registerSchema";
-import { z } from "zod";
 import { useToast } from "@/components/ui/use-toast";
 
 type UseSignupFormReturn = {
@@ -27,6 +26,7 @@ export function useSignupForm(onSuccess: () => void): UseSignupFormReturn {
   const [formData, setFormData] = useState<signUpType>({
     name: "",
     email: "",
+    phone: "",
     password: "",
     confirmPassword: "",
   });
@@ -35,12 +35,10 @@ export function useSignupForm(onSuccess: () => void): UseSignupFormReturn {
     Partial<Record<keyof signUpType, string>>
   >({});
 
-  // Clear Redux error on input change
   useEffect(() => {
     if (error) dispatch(clearError());
   }, [formData, dispatch, error]);
 
-  // On successful registration
   useEffect(() => {
     if (token) {
       toast({
@@ -48,7 +46,13 @@ export function useSignupForm(onSuccess: () => void): UseSignupFormReturn {
         description: "Your account has been created! Please log in.",
       });
       dispatch(resetUI());
-      setFormData({ name: "", email: "", password: "", confirmPassword: "" });
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        password: "",
+        confirmPassword: "",
+      });
       setErrors({});
       onSuccess();
     }
@@ -85,13 +89,20 @@ export function useSignupForm(onSuccess: () => void): UseSignupFormReturn {
       actAuthRegister({
         name: formData.name,
         email: formData.email,
+        phone: formData.phone,
         password: formData.password,
       })
     );
   };
 
   const resetForm = () => {
-    setFormData({ name: "", email: "", password: "", confirmPassword: "" });
+    setFormData({
+      name: "",
+      email: "",
+      phone: "",
+      password: "",
+      confirmPassword: "",
+    });
     setErrors({});
   };
 

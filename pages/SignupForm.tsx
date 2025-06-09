@@ -50,12 +50,26 @@ export default function SignupForm({ onSuccess }: SignupFormProps) {
             <Input
               id="email"
               type="email"
-              placeholder="name@example.com"
+              placeholder="name@gmail.com"
               value={formData.email}
               onChange={handleChange("email")}
             />
             {errors.email && (
               <p className="text-red-600 text-sm">{errors.email}</p>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="phone">Phone Number</Label>
+            <Input
+              id="phone"
+              type="tel"
+              placeholder="01012345678"
+              value={formData.phone}
+              onChange={handleChange("phone")}
+            />
+            {errors.phone && (
+              <p className="text-red-600 text-sm">{errors.phone}</p>
             )}
           </div>
 
@@ -92,6 +106,7 @@ export default function SignupForm({ onSuccess }: SignupFormProps) {
           {error &&
             !errors.name &&
             !errors.email &&
+            !errors.phone &&
             !errors.password &&
             !errors.confirmPassword && (
               <p className="text-red-600 text-sm">{error}</p>

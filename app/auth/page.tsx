@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import LoginForm from "./pages/LoginForm";
-import SignupForm from "./pages/SignupForm";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import LoginForm from "@/pages/LoginForm";
+import SignupForm from "@/pages/SignupForm";
 
 export default function AuthPage() {
   const [activeTab, setActiveTab] = useState("login");
