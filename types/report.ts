@@ -7,6 +7,7 @@ export interface Report {
   age?: number | null;
   gender?: string | null;
   description: string;
+  contact_number:string | null
   imageUrl?: string | null;
   imagePublicId?: string | null;
   faceEmbedding?: number[] | null; // More precise than any

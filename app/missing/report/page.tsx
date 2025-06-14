@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import { useAppDispatch } from "../../../store/hooks";
 import { createReport } from "../../../store/report/reportSlice";
-
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -28,7 +27,6 @@ import { Upload, Camera, AlertTriangle, X, CameraOff } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useRouter } from "next/navigation";
 
-
 export default function ReportMissingPage() {
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -47,6 +45,7 @@ export default function ReportMissingPage() {
     gender: "",
     description: "",
     location: "",
+    contact_number: "", // Added contact_number
   });
 
   // Tab order
@@ -140,12 +139,36 @@ export default function ReportMissingPage() {
     }
   };
 
-  // Submit handler with loading state toggle
+  // Submit handler with validation and loading state
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (showCamera) {
       stopCamera();
+    }
+
+    // Validate required fields
+    if (
+      !formData.personName ||
+      !formData.age ||
+      !formData.gender ||
+      !formData.location ||
+      !formData.contact_number
+    ) {
+      alert("Please fill in all required fields, including contact number.");
+      return;
+    }
+
+    if (isNaN(Number(formData.age)) || Number(formData.age) <= 0) {
+      alert("Please enter a valid age.");
+      return;
+    }
+
+    // Basic phone number validation (e.g., at least 7 digits, allowing + and -)
+    const phoneRegex = /^\+?\d{7,}$/;
+    if (!phoneRegex.test(formData.contact_number)) {
+      alert("Please enter a valid contact number (at least 7 digits).");
+      return;
     }
 
     if (!image) {
@@ -159,12 +182,13 @@ export default function ReportMissingPage() {
     payload.append("gender", formData.gender);
     payload.append("description", formData.description);
     payload.append("location", formData.location);
+    payload.append("contact_number", formData.contact_number); // Added contact_number
     payload.append("image", image);
 
     try {
       setLoading(true);
       await dispatch(createReport(payload)).unwrap();
-      router.push("/found/report"); 
+      router.push("/found/report");
     } catch (error: any) {
       console.error("Submission error:", error);
       alert(
@@ -176,6 +200,7 @@ export default function ReportMissingPage() {
       setLoading(false);
     }
   };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-3xl mx-auto">
@@ -218,6 +243,17 @@ export default function ReportMissingPage() {
                         placeholder="Full name"
                         required
                         value={formData.personName}
+                        onChange={handleChange}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="contact_number">Contact Number</Label>
+                      <Input
+                        id="contact_number"
+                        type="tel"
+                        placeholder="Phone number"
+                        required
+                        value={formData.contact_number}
                         onChange={handleChange}
                       />
                     </div>

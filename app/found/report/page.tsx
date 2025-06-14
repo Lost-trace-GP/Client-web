@@ -152,6 +152,9 @@ export default function ReportFoundPage() {
               <p>
                 <strong>Description:</strong> {report.description}
               </p>
+              <p>
+                <strong>Contact Number:</strong> {report.contact_number}
+              </p>
 
               <p>
                 <strong>Status:</strong>{" "}
