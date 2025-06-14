@@ -26,9 +26,12 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Upload, Camera, AlertTriangle, X, CameraOff } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { useRouter } from "next/navigation";
+
 
 export default function ReportMissingPage() {
   const dispatch = useAppDispatch();
+  const router = useRouter();
 
   // Loading state to disable submit button while submitting
   const [loading, setLoading] = useState(false);
@@ -161,16 +164,7 @@ export default function ReportMissingPage() {
     try {
       setLoading(true);
       await dispatch(createReport(payload)).unwrap();
-      alert("Report submitted successfully!");
-      setFormData({
-        personName: "",
-        age: "",
-        gender: "",
-        description: "",
-        location: "",
-      });
-      setImage(null);
-      setActiveTab("personal"); // Reset to first tab after submission
+      router.push("/found/report"); 
     } catch (error: any) {
       console.error("Submission error:", error);
       alert(
@@ -182,7 +176,6 @@ export default function ReportMissingPage() {
       setLoading(false);
     }
   };
-
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-3xl mx-auto">

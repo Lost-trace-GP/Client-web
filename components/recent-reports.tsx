@@ -10,12 +10,22 @@ import { useEffect } from "react";
 import { fetchReports } from "@/store/report/reportSlice";
 import { RootState } from "@/store";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { formatDate } from "@/utils/formatDate";
 
 export function RecentReports() {
   const dispatch = useAppDispatch();
   const { reports, loading, error } = useAppSelector(
     (state: RootState) => state.report
   );
+
+  const { user, token } = useAppSelector((state: RootState) => state.auth);
+
+  console.log( "user",user);  
+
+
+
+
+
 
   console.log(reports);
   useEffect(() => {
@@ -49,9 +59,10 @@ export function RecentReports() {
     return Array.from(map.values());
   })();
 
+  
   return (
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-      {filteredReports.map((report) => (
+      {filteredReports.slice(0, 4).map((report) => (
         <Card key={report.id} className="overflow-hidden">
           <div className="aspect-square relative">
             <img
@@ -73,7 +84,7 @@ export function RecentReports() {
             <div className="font-semibold text-lg mb-2">
               <h1>Person Name: {report.personName}</h1>
               <h1>Age: {report.age}</h1>
-              <h1>Age: {report.status}</h1>
+              <h1>Status: {report.status}</h1>
             </div>
             <div className="space-y-2 text-sm text-muted-foreground">
               <div className="flex items-center gap-2">
@@ -82,7 +93,7 @@ export function RecentReports() {
               </div>
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4" />
-                <span>{new Date(report.submittedAt).toLocaleDateString()}</span>
+                <span> {formatDate(report.submittedAt)}</span>
               </div>
             </div>
           </CardContent>

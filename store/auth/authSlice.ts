@@ -20,7 +20,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 // Async thunk for user registration
 export const actAuthRegister = createAsyncThunk<
-  { token: string },
+  { token: string; user: Partial<User> },
   { name: string; email: string; phone: string; password: string },
   { rejectValue: string }
 >("auth/register", async (credentials, { rejectWithValue }) => {
@@ -36,17 +36,29 @@ export const actAuthRegister = createAsyncThunk<
   }
 });
 
-// Async thunk for user login
+// For auth endpoints, add ngrok headers to axios requests
 export const login = createAsyncThunk<
   { token: string; user: Partial<User> },
   { email: string; password: string },
   { rejectValue: string }
 >("auth/login", async (credentials, { rejectWithValue }) => {
   try {
-    const response = await axios.post(`${API_URL}/auth/login`, credentials);
+    const response = await axios.post(`${API_URL}/api/auth/login`, credentials, {
+      headers: {
+        "Content-Type": "application/json",
+        "ngrok-skip-browser-warning": "true",
+      },
+    });
+    console.log("Login response:", response.data);
     return response.data.data;
   } catch (error: any) {
-    return rejectWithValue(error.response?.data?.message || "Login failed");
+    console.error("Login error:", error.response?.data || error.message);
+    
+    const errorMessage = error.response?.data?.message || 
+                        error.message || 
+                        "Login failed";
+    
+    return rejectWithValue(errorMessage);
   }
 });
 
@@ -112,10 +124,13 @@ const authSlice = createSlice({
       })
       .addCase(
         actAuthRegister.fulfilled,
-        (state, action: PayloadAction<{ token: string }>) => {
+        (
+          state,
+          action: PayloadAction<{ token: string; user: Partial<User> }>
+        ) => {
           state.loading = "succeeded";
           state.token = action.payload.token;
-          state.user = { role: Role.USER }; // Default role, no user data returned from register
+          state.user = action.payload.user; // ✅ Use actual user info from response
         }
       )
       .addCase(actAuthRegister.rejected, (state, action) => {

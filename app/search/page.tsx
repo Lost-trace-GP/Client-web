@@ -11,6 +11,7 @@ import Link from "next/link";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { fetchReports } from "@/store/report/reportSlice";
 import { RootState } from "@/store";
+import { formatDate } from "@/utils/formatDate";
 
 export default function SearchPage() {
   const dispatch = useAppDispatch();
@@ -61,6 +62,8 @@ export default function SearchPage() {
 
   const uniqueReports = Array.from(uniqueReportsMap.values());
 
+
+
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-2">Search Reports</h1>
@@ -85,7 +88,6 @@ export default function SearchPage() {
         </TabsList>
       </Tabs>
 
-      {loading && <p>Loading reports...</p>}
       {error && <p className="text-red-600">Error: {error}</p>}
 
       {uniqueReports.length > 0 ? (
@@ -115,11 +117,11 @@ export default function SearchPage() {
                 <div className="space-y-2 text-sm text-muted-foreground">
                   <div className="flex items-center gap-2">
                     <MapPin className="h-4 w-4" />
-                    <span>{report.location}</span>
+                    <span>{report.location || "Unknown Location"}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Calendar className="h-4 w-4" />
-                    <span>{report.submittedAt}</span>
+                    <span> {formatDate(report.submittedAt)}</span>
                   </div>
                 </div>
                 <Button asChild variant="outline" className="w-full mt-4">
