@@ -13,6 +13,18 @@ import { cn } from "@/lib/utils";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { logout } from "@/store/auth/authSlice";
 
+import { Bell, } from "lucide-react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"; // If you're using shadcn/ui
+import { Badge } from "@/components/ui/badge"; // optional badge component
+import { useEffect } from "react";
+import { fetchNotifications } from "@/store/notification/notificationSlice";
+import NotificationBell from "@/pages/notification/NotificationBell";
+
+
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -21,11 +33,22 @@ export function Header() {
   const dispatch = useAppDispatch();
   const { token, user, loading } = useAppSelector((state) => state.auth);
 
+  const notifications = useAppSelector(
+    (state) => state.notification.notifications
+  );
+  const isAuthenticated = token && user && loading === "succeeded";
+
+  console.log("Notifications:", notifications);
+  useEffect(() => {
+    if (isAuthenticated) {
+      dispatch(fetchNotifications());
+    }
+  }, [dispatch, isAuthenticated]);
+
   const toggleMenu = () => setIsMenuOpen((prev) => !prev);
   const toggleSearch = () => setIsSearchOpen((prev) => !prev);
   const handleLogout = () => dispatch(logout());
 
-  const isAuthenticated = token && user && loading === "succeeded";
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -106,7 +129,7 @@ export function Header() {
                 )}
                 onClick={() => setIsMenuOpen(false)}
               >
-                Report Found
+                My Reports
               </Link>
             </li>
             <li>
@@ -128,7 +151,7 @@ export function Header() {
 
         {/* Search, Theme Toggle, Auth Buttons */}
         <div className="flex items-center gap-2">
-          {isSearchOpen ? (
+          {/* {isSearchOpen ? (
             <div className="relative">
               <Input
                 type="search"
@@ -150,7 +173,11 @@ export function Header() {
               <Search className="h-5 w-5" />
               <span className="sr-only">Search</span>
             </Button>
-          )}
+          )} */}
+
+          {/* add it here  */}
+          {/* Notifications */}
+          <NotificationBell />
 
           <ModeToggle />
 

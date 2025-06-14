@@ -3,25 +3,29 @@ import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
 import authReducer from "../store/auth/authSlice";
-import reportReducer from "../store/report/reportSlice"; // import your report slice reducer
+import reportReducer from "../store/report/reportSlice";
+import notificationReducer from "../store/notification/notificationSlice";
+import adminReducer from "../store/admin/adminSlice"; 
 
 const authPersistConfig = {
   key: "auth",
   storage,
-  whitelist: ["token", "user"], // persist only token and user keys in auth state
+  whitelist: ["token", "user"],
 };
 
 const persistedAuthReducer = persistReducer(authPersistConfig, authReducer);
 
 const rootReducer = combineReducers({
   auth: persistedAuthReducer,
-  report: reportReducer, // add report slice reducer here
+  report: reportReducer,
+  notification: notificationReducer,
+  admin: adminReducer, 
 });
 
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["auth"], // add 'report' here if you want to persist report state as well
+  whitelist: ["auth", "notification"],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
