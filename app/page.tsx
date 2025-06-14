@@ -1,8 +1,6 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Search, Users, AlertTriangle, Heart } from "lucide-react"
-import { StatCard } from "@/components/stat-card"
 import { RecentReports } from "@/components/recent-reports"
 import Image from "next/image"
 import lost from "../assets/lost.jpg"
@@ -33,7 +31,7 @@ export default function Home() {
                 <Link href="/missing/report">Report Missing Person</Link>
               </Button>
               <Button asChild size="lg" variant="outline">
-                <Link href="/found/report">Report Found Person</Link>
+                <Link href="/found/report">My Reports</Link>
               </Button>
             </div>
           </div>

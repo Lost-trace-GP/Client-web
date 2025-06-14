@@ -210,7 +210,7 @@ export const updateReport = createAsyncThunk<
   const token = thunkAPI.getState().auth.token;
 
   try {
-    const response = await axios.put(`${API_URL}/api/report/${id}`, formData, {
+    const response = await axios.patch(`${API_URL}/api/report/${id}/update`, formData, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "multipart/form-data",

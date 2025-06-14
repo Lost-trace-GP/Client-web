@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -8,61 +7,20 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Calendar, ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { fetchReports } from "@/store/report/reportSlice";
-import { RootState } from "@/store";
 import { formatDate } from "@/utils/formatDate";
+import { useSearchReports } from "./useSearchReports";
 
 export default function SearchPage() {
-  const dispatch = useAppDispatch();
-  const { reports, loading, error } = useAppSelector(
-    (state: RootState) => state.report
-  );
-
-  const [searchQuery, setSearchQuery] = useState("");
-  const [activeTab, setActiveTab] = useState("all");
-  const [ageRange, setAgeRange] = useState([0, 100]);
-
-  useEffect(() => {
-    dispatch(fetchReports());
-  }, [dispatch]);
-
-  // Step 1: filter by search, tab, age range
-  const reportsFiltered = reports.filter((result: any) => {
-    const matchesQuery =
-      searchQuery === "" ||
-      result.personName.toLowerCase().includes(searchQuery.toLowerCase())
-
-    const matchesTab =
-      activeTab === "all" ||
-      (activeTab === "missing" && result.status?.toUpperCase() === "PENDING") ||
-      (activeTab === "found" && result.status?.toUpperCase() === "MATCHED");
-
-    const matchesAgeRange =
-      result.age >= ageRange[0] && result.age <= ageRange[1];
-
-    return matchesQuery && matchesTab && matchesAgeRange;
-  });
-
-  // Step 2: deduplicate by personName, prefer "found" status
-  const uniqueReportsMap = new Map<string, (typeof reports)[0]>();
-
-  for (const report of reportsFiltered) {
-    const key = report.id.toLowerCase();
-
-    if (!uniqueReportsMap.has(key)) {
-      uniqueReportsMap.set(key, report);
-    } else {
-      const existingReport = uniqueReportsMap.get(key)!;
-      if (existingReport.status === "PENDING" && report.status === "MATCHED") {
-        uniqueReportsMap.set(key, report);
-      }
-    }
-  }
-
-  const uniqueReports = Array.from(uniqueReportsMap.values());
-
-
+  const {
+    reports,
+    error,
+    searchQuery,
+    setSearchQuery,
+    activeTab,
+    setActiveTab,
+    ageRange,
+    setAgeRange,
+  } = useSearchReports();
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -90,9 +48,9 @@ export default function SearchPage() {
 
       {error && <p className="text-red-600">Error: {error}</p>}
 
-      {uniqueReports.length > 0 ? (
+      {reports.length > 0 ? (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {uniqueReports.map((report) => (
+          {reports.map((report) => (
             <Card key={report.id} className="overflow-hidden">
               <div className="aspect-square relative">
                 <img

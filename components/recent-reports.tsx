@@ -1,15 +1,16 @@
 "use client";
 
+import { useEffect, useMemo } from "react";
+import Link from "next/link";
+import { MapPin, Calendar, ArrowRight } from "lucide-react";
+
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MapPin, Calendar, ArrowRight } from "lucide-react";
-import Link from "next/link";
 
-import { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { fetchReports } from "@/store/report/reportSlice";
 import { RootState } from "@/store";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { formatDate } from "@/utils/formatDate";
 
 export function RecentReports() {
@@ -18,85 +19,88 @@ export function RecentReports() {
     (state: RootState) => state.report
   );
 
-  const { user, token } = useAppSelector((state: RootState) => state.auth);
-
-  console.log( "user",user);  
-
-
-
-
-
-
-  console.log(reports);
   useEffect(() => {
     dispatch(fetchReports());
   }, [dispatch]);
 
-  if (loading === "loading") return <p>Loading reports...</p>;
-  if (error) return <p className="text-red-500">Error: {"u need to sign in"}</p>;
-
-  // Map personName to their reports grouped by status priority: "Found" first, else "Missing"
-  // Filter reports logic:
-
-  const filteredReports = (() => {
+  const filteredReports = useMemo(() => {
     const map = new Map<string, (typeof reports)[0]>();
-
     for (const report of reports) {
-      // Use fallback if personName is null/undefined
       const key = report.personName ?? "unknown";
-
       const existing = map.get(key);
-
-      if (!existing) {
+      if (
+        !existing ||
+        (existing.status === "PENDING" && report.status !== "PENDING")
+      ) {
         map.set(key, report);
-      } else {
-        if (existing.status === "PENDING" && report.status !== "PENDING") {
-          map.set(key, report);
-        }
       }
     }
-
     return Array.from(map.values());
-  })();
+  }, [reports]);
 
-  
+  const getBadgeColor = (status: string) =>
+    status === "PENDING"
+      ? "bg-red-500 hover:bg-red-600"
+      : "bg-green-500 hover:bg-green-600";
+
+  if (loading === "loading") {
+    return <p>Loading reports...</p>;
+  }
+
+  if (error) {
+    return <p className="text-red-500">Error: You need to sign in.</p>;
+  }
+
+  if (filteredReports.length === 0) {
+    return (
+      <div className="text-center py-12">
+        <h2 className="text-xl font-semibold mb-2">
+          No recent reports available
+        </h2>
+        <p className="text-muted-foreground">
+          There are currently no reports to show. Please check back later.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
       {filteredReports.slice(0, 4).map((report) => (
         <Card key={report.id} className="overflow-hidden">
           <div className="aspect-square relative">
             <img
-              src={report.imageUrl || "/placeholder.svg"}
-              // alt={report.personName}
+              src={report.imageUrl ?? "/placeholder.svg"}
+              alt={report.personName ?? "Missing person"}
               className="object-cover w-full h-full"
             />
             <Badge
-              className={`absolute top-2 right-2 ${
-                report.status === "PENDING"
-                  ? "bg-red-500 hover:bg-red-600"
-                  : "bg-green-500 hover:bg-green-600"
-              }`}
+              className={`absolute top-2 right-2 ${getBadgeColor(
+                report.status
+              )}`}
             >
               {report.status === "PENDING" ? "Missing" : "Found"}
             </Badge>
           </div>
+
           <CardContent className="p-4">
-            <div className="font-semibold text-lg mb-2">
-              <h1>Person Name: {report.personName}</h1>
-              <h1>Age: {report.age}</h1>
-              <h1>Status: {report.status}</h1>
+            <div className="font-semibold text-lg mb-2 space-y-1">
+              <p>Person Name: {report.personName}</p>
+              <p>Age: {report.age}</p>
+              <p>Status: {report.status}</p>
             </div>
             <div className="space-y-2 text-sm text-muted-foreground">
               <div className="flex items-center gap-2">
                 <MapPin className="h-4 w-4" />
-                <span>Location:{report.location || "Unknown"}</span>
+                <span>Location: {report.location ?? "Unknown"}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4" />
-                <span> {formatDate(report.submittedAt)}</span>
+                <span>{formatDate(report.submittedAt)}</span>
               </div>
             </div>
           </CardContent>
+
           <CardFooter className="p-4 pt-0">
             <Button asChild variant="outline" className="w-full">
               <Link
