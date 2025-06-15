@@ -60,20 +60,6 @@ export default function SignupForm({ onSuccess }: SignupFormProps) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="phone">Phone Number</Label>
-            <Input
-              id="phone"
-              type="tel"
-              placeholder="01012345678"
-              value={formData.phone}
-              onChange={handleChange("phone")}
-            />
-            {errors.phone && (
-              <p className="text-red-600 text-sm">{errors.phone}</p>
-            )}
-          </div>
-
-          <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
             <Input
               id="password"
@@ -106,7 +92,6 @@ export default function SignupForm({ onSuccess }: SignupFormProps) {
           {error &&
             !errors.name &&
             !errors.email &&
-            !errors.phone &&
             !errors.password &&
             !errors.confirmPassword && (
               <p className="text-red-600 text-sm">{error}</p>

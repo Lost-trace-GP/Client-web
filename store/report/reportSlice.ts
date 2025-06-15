@@ -71,6 +71,10 @@ export const createReport = createAsyncThunk<
     return thunkAPI.rejectWithValue(errorMessage);
   }
 });
+
+
+
+// fetch user reports 
 export const fetchUserReports = createAsyncThunk<
   Report[],
   void,
@@ -113,6 +117,8 @@ export const fetchUserReports = createAsyncThunk<
   }
 });
 
+
+//  fetch report by id 
 export const fetchReportById = createAsyncThunk<
   Report,
   string,
@@ -157,7 +163,6 @@ export const fetchReportById = createAsyncThunk<
 
 
 // Delete a report
-
 export const deleteReport = createAsyncThunk<
   string, // Return type
   string, // Argument type (report ID)
@@ -205,12 +210,11 @@ export const updateReport = createAsyncThunk<
   const token = thunkAPI.getState().auth.token;
 
   try {
-    const response = await axios.put(`${API_URL}/api/report/${id}`, formData, {
+    const response = await axios.patch(`${API_URL}/api/report/${id}/update`, formData, {
       headers: {
         Authorization: `Bearer ${token}`,
-        Accept: "application/json",
+        "Content-Type": "multipart/form-data",
         "ngrok-skip-browser-warning": "true",
-        "Cache-Control": "no-cache",
       },
     });
 

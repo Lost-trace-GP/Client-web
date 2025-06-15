@@ -10,10 +10,7 @@ const signUpSchema = z
       .string()
       .min(1, { message: "Email address is required" })
       .email({ message: "Invalid email address" }),
-    phone: z.string().regex(/^01[0125][0-9]{8}$/, {
-      message:
-        "Phone number must be a valid Egyptian number (e.g., 01234567890)",
-    }),
+   
     password: z
       .string()
       .regex(/.*[!@#$%^&*()_+{}|[\]\\:";'<>?,./].*/, {

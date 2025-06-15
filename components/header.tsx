@@ -1,44 +1,28 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { Menu, X, Search } from "lucide-react";
+import { Menu, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { ModeToggle } from "@/components/mode-toggle";
 import { cn } from "@/lib/utils";
 
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { logout } from "@/store/auth/authSlice";
-
-import { Bell, } from "lucide-react";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"; // If you're using shadcn/ui
-import { Badge } from "@/components/ui/badge"; // optional badge component
-import { useEffect } from "react";
 import { fetchNotifications } from "@/store/notification/notificationSlice";
 import NotificationBell from "@/pages/notification/NotificationBell";
 
-
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const pathname = usePathname();
   const dispatch = useAppDispatch();
   const { token, user, loading } = useAppSelector((state) => state.auth);
 
-  const notifications = useAppSelector(
-    (state) => state.notification.notifications
-  );
   const isAuthenticated = token && user && loading === "succeeded";
 
-  console.log("Notifications:", notifications);
   useEffect(() => {
     if (isAuthenticated) {
       dispatch(fetchNotifications());
@@ -46,9 +30,7 @@ export function Header() {
   }, [dispatch, isAuthenticated]);
 
   const toggleMenu = () => setIsMenuOpen((prev) => !prev);
-  const toggleSearch = () => setIsSearchOpen((prev) => !prev);
   const handleLogout = () => dispatch(logout());
-
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -132,56 +114,31 @@ export function Header() {
                 My Reports
               </Link>
             </li>
-            <li>
-              <Link
-                href="/dashboard"
-                className={cn(
-                  "text-sm font-medium transition-colors hover:text-teal-600",
-                  pathname === "/dashboard"
-                    ? "text-teal-600"
-                    : "text-foreground"
-                )}
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Dashboard
-              </Link>
-            </li>
+
+            {/* Show Dashboard only for ADMINs */}
+            {user?.role === "ADMIN" && (
+              <li>
+                <Link
+                  href="/dashboard"
+                  className={cn(
+                    "text-sm font-medium transition-colors hover:text-teal-600",
+                    pathname === "/dashboard"
+                      ? "text-teal-600"
+                      : "text-foreground"
+                  )}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Dashboard
+                </Link>
+              </li>
+            )}
           </ul>
         </nav>
 
-        {/* Search, Theme Toggle, Auth Buttons */}
+        {/* Right-side Controls */}
         <div className="flex items-center gap-2">
-          {/* {isSearchOpen ? (
-            <div className="relative">
-              <Input
-                type="search"
-                placeholder="Search reports..."
-                className="w-[200px] md:w-[300px]"
-                autoFocus
-              />
-              <Button
-                variant="ghost"
-                size="icon"
-                className="absolute right-0 top-0"
-                onClick={toggleSearch}
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
-          ) : (
-            <Button variant="ghost" size="icon" onClick={toggleSearch}>
-              <Search className="h-5 w-5" />
-              <span className="sr-only">Search</span>
-            </Button>
-          )} */}
-
-          {/* add it here  */}
-          {/* Notifications */}
           <NotificationBell />
-
           <ModeToggle />
-
-          {/* Auth Buttons */}
           {loading === "loading" ? null : isAuthenticated ? (
             <Button
               onClick={handleLogout}

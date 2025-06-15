@@ -77,6 +77,7 @@ const AllReports = () => {
                             <h3 className="font-semibold text-lg">
                               <p>Nmae :{report.personName}</p>
                               <p>Age : {report.age}</p>
+                              <p>Contact Number : {report.contact_number}</p>
                             </h3>
 
                             <div className="mt-2">

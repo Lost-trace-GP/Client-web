@@ -42,14 +42,13 @@ export default function ReportFoundPage() {
     location: "",
     gender: "",
     description: "",
+    contact_number: "", // ✅ Add here
   });
 
-  // Fetch user's reports on mount
   useEffect(() => {
     dispatch(fetchUserReports());
   }, [dispatch]);
 
-  // Handle deleting a report
   const handleDelete = async (id: string) => {
     if (confirm("Are you sure you want to delete this report?")) {
       await dispatch(deleteReport(id));
@@ -57,7 +56,6 @@ export default function ReportFoundPage() {
     }
   };
 
-  // Handle opening the edit dialog
   const handleEditClick = (report: Report) => {
     setEditingReport(report);
     setFormData({
@@ -66,10 +64,10 @@ export default function ReportFoundPage() {
       location: report.location || "",
       gender: report.gender || "",
       description: report.description || "",
+      contact_number: report.contact_number || "", // ✅ Prefill
     });
   };
 
-  // Handle submitting updated report
   const handleUpdate = async () => {
     if (!editingReport) return;
 
@@ -79,6 +77,7 @@ export default function ReportFoundPage() {
     updatedForm.append("location", formData.location);
     updatedForm.append("gender", formData.gender);
     updatedForm.append("description", formData.description);
+    updatedForm.append("contact_number", formData.contact_number); // ✅ Include here
 
     const result = await dispatch(
       updateReport({ id: editingReport.id, formData: updatedForm })
@@ -151,6 +150,9 @@ export default function ReportFoundPage() {
               </p>
               <p>
                 <strong>Description:</strong> {report.description}
+              </p>
+              <p>
+                <strong>Contact Number:</strong> {report.contact_number}
               </p>
 
               <p>
@@ -251,6 +253,18 @@ export default function ReportFoundPage() {
                 value={formData.description}
                 onChange={(e) =>
                   setFormData({ ...formData, description: e.target.value })
+                }
+              />
+            </div>
+            <div>
+              <Label>Contact Number</Label>
+              <Input
+                value={formData.contact_number}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    contact_number: e.target.value,
+                  })
                 }
               />
             </div>

@@ -7,11 +7,12 @@ export interface Report {
   age?: number | null;
   gender?: string | null;
   description: string;
+  contact_number:string | null
   imageUrl?: string | null;
   imagePublicId?: string | null;
   faceEmbedding?: number[] | null; // More precise than any
   status: ReportStatus;
-  location?: string | null;
+  location: string | null;
   lat?: number | null;
   lon?: number | null;
   submittedAt: string; // ISO date string
